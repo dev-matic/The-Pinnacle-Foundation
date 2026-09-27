@@ -1,0 +1,445 @@
+@import "tailwindcss";
+
+/* ───────────────────────── Tokens ───────────────────────── */
+
+@theme {
+  --color-ivory: #f6f1e8;
+  --color-charcoal: #1f1f1b;
+  --color-olive: #465a3c;
+  --color-olive-deep: #36462e;
+  --color-gold: #c6a15b;
+  --color-gold-ink: #7a5e2a; /* gold that passes contrast as text on ivory */
+  --color-terracotta: #a85f43;
+  --color-terracotta-deep: #9a5238; /* terracotta that carries ivory body text */
+  --color-sand: #d8ccb8;
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --breakpoint-xs: 26rem;
+}
+
+/* Registered so that scroll-driven tone changes interpolate smoothly. */
+@property --bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f6f1e8;
+}
+@property --fg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1f1f1b;
+}
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #465a3c;
+}
+@property --line {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #c6a15b;
+}
+
+/* A "tone" is a full colour context: background, text, accent, motif line and CTA. */
+:root,
+[data-tone="ivory"] {
+  --bg: var(--color-ivory);
+  --fg: var(--color-charcoal);
+  --muted: color-mix(in oklab, var(--fg) 72%, var(--bg));
+  --accent: var(--color-olive);
+  --line: var(--color-gold);
+  --cta-bg: var(--color-olive);
+  --cta-fg: var(--color-ivory);
+  --cta-hover: var(--color-charcoal);
+  --cta-hover-fg: var(--color-ivory);
+}
+[data-tone="sand"] {
+  --bg: var(--color-sand);
+  --fg: var(--color-charcoal);
+  --accent: var(--color-olive-deep);
+  --line: var(--color-gold-ink);
+  --cta-bg: var(--color-charcoal);
+  --cta-fg: var(--color-ivory);
+  --cta-hover: var(--color-olive);
+  --cta-hover-fg: var(--color-ivory);
+}
+[data-tone="olive"] {
+  --bg: var(--color-olive);
+  --fg: var(--color-ivory);
+  --accent: var(--color-gold);
+  --line: var(--color-gold);
+  --cta-bg: var(--color-ivory);
+  --cta-fg: var(--color-charcoal);
+  --cta-hover: var(--color-gold);
+  --cta-hover-fg: var(--color-charcoal);
+}
+[data-tone="terracotta"] {
+  --bg: var(--color-terracotta-deep);
+  --fg: var(--color-ivory);
+  --accent: var(--color-sand);
+  --line: var(--color-sand);
+  --cta-bg: var(--color-ivory);
+  --cta-fg: var(--color-charcoal);
+  --cta-hover: var(--color-charcoal);
+  --cta-hover-fg: var(--color-ivory);
+}
+[data-tone="charcoal"] {
+  --bg: var(--color-charcoal);
+  --fg: var(--color-ivory);
+  --accent: var(--color-gold);
+  --line: var(--color-gold);
+  --cta-bg: var(--color-gold);
+  --cta-fg: var(--color-charcoal);
+  --cta-hover: var(--color-ivory);
+  --cta-hover-fg: var(--color-charcoal);
+}
+
+/* Elements that carry a tone paint their own surface. */
+[data-tone] {
+  --muted: color-mix(in oklab, var(--fg) 74%, var(--bg));
+  --hairline: color-mix(in oklab, var(--fg) 18%, transparent);
+  color: var(--fg);
+}
+/* Saturated tones need a stronger secondary text mix to keep 4.5:1. */
+[data-tone="olive"] {
+  --muted: color-mix(in oklab, var(--fg) 82%, var(--bg));
+}
+[data-tone="terracotta"] {
+  --muted: color-mix(in oklab, var(--fg) 94%, var(--bg));
+}
+.tone-surface {
+  background-color: var(--bg);
+}
+
+/* The page itself follows the scroll-driven tone set on <html data-page-tone>. */
+html {
+  transition:
+    --bg 900ms var(--ease-out-expo),
+    --fg 900ms var(--ease-out-expo),
+    --accent 900ms var(--ease-out-expo),
+    --line 900ms var(--ease-out-expo);
+  -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+}
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-charcoal);
+}
+
+/* ───────────────────────── Type ───────────────────────── */
+
+@utility display {
+  font-family: var(--font-sans);
+  font-stretch: 68%;
+  font-weight: 760;
+  text-transform: uppercase;
+  line-height: 0.84;
+  letter-spacing: -0.012em;
+  font-kerning: normal;
+}
+@utility display-wide {
+  font-family: var(--font-sans);
+  font-stretch: 112%;
+  font-weight: 300;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+@utility serif-statement {
+  font-family: var(--font-serif);
+  font-weight: 350;
+  line-height: 1.08;
+  letter-spacing: -0.018em;
+  font-optical-sizing: auto;
+}
+@utility lede {
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 1.05rem + 0.7vw, 1.6rem);
+  line-height: 1.42;
+  font-weight: 380;
+  letter-spacing: -0.005em;
+}
+@utility meta {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+@utility text-muted {
+  color: var(--muted);
+}
+
+/* Fluid display scale */
+@utility fs-giant {
+  font-size: clamp(4.5rem, 1rem + 17vw, 17rem);
+}
+@utility fs-huge {
+  font-size: clamp(3.4rem, 1rem + 10.5vw, 11rem);
+}
+/* Section heads: loud enough to lead, quieter than the hero-level moments. */
+@utility fs-xl {
+  font-size: clamp(2.5rem, 1rem + 4.2vw, 5.5rem);
+}
+@utility fs-lg {
+  font-size: clamp(2rem, 1rem + 2.6vw, 3.75rem);
+}
+@utility fs-md {
+  font-size: clamp(1.7rem, 1rem + 2vw, 2.9rem);
+}
+
+/* ───────────────────────── Layout ───────────────────────── */
+
+@utility container-x {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 0.4rem + 3vw, 3.5rem);
+  max-width: 108rem;
+}
+
+@utility hairline {
+  border-color: var(--hairline);
+}
+
+/* ───────────────────────── Interaction ───────────────────────── */
+
+/* Base layer, so a component that draws its own focus state (e.g. form fields) can opt out with outline-none. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  [data-tone="ivory"] :focus-visible,
+  [data-tone="sand"] :focus-visible {
+    outline-color: var(--color-olive);
+  }
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: -4rem;
+  z-index: 200;
+  padding: 0.75rem 1.1rem;
+  background: var(--color-charcoal);
+  color: var(--color-ivory);
+  border-radius: 999px;
+  transition: top 200ms;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Animated underline for inline and arrow links */
+.u-link {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 100% 100%;
+  transition: background-size 500ms var(--ease-out-expo);
+}
+.u-link:hover,
+.u-link:focus-visible {
+  background-size: 100% 1px;
+  background-position: 0 100%;
+}
+.u-link-static {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+}
+
+/* Photography grade: unifies stand-in photos from many sources into one warm register. */
+.photo-grade {
+  filter: saturate(0.86) contrast(1.03) sepia(0.06);
+}
+
+/* Split-text helpers */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+.char,
+.word {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Hide native number spinners etc. in forms */
+input[type="number"]::-webkit-inner-spin-button {
+  appearance: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ───────────────────────── Home hero ─────────────────────────
+   Default (no JS, or reduced motion): a static composition followed by the
+   statement in normal flow. With JS and motion allowed, the stage pins and the
+   arch opens into the statement (components/home/Hero.tsx). */
+
+.hero {
+  --hfs: min(21.5vw, 13svh);
+  /* On phones the arch sits below the headline, above the call to action. */
+  --arch-top: max(40svh, calc(7.5rem + var(--hfs) * 2.55));
+}
+@media (min-width: 1024px) {
+  .hero {
+    --hfs: clamp(6rem, min(19.5vw, 26.5svh), 19rem);
+  }
+}
+.hero-photo {
+  left: 50%;
+  top: var(--arch-top);
+  bottom: 16rem;
+  width: 44vw;
+}
+@media (min-width: 1024px) {
+  .hero-photo {
+    left: 57%;
+    top: 20svh;
+    bottom: 0;
+    width: min(28vw, 30rem);
+  }
+}
+.hero-outline,
+.hero-ray-wrap,
+.hero-light {
+  display: none;
+}
+.hero-statement {
+  background: var(--color-charcoal);
+  color: var(--color-ivory);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js .hero-stage {
+    height: 100svh;
+    min-height: 36rem;
+    overflow: hidden;
+  }
+  html.js .hero-photo {
+    inset: 0;
+    width: 100%;
+  }
+  html.js .hero-outline,
+  html.js .hero-ray-wrap,
+  html.js .hero-light {
+    display: block;
+  }
+  html.js .hero-statement {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    visibility: hidden;
+    background: transparent;
+  }
+  html.js .hero-stage [data-intro] {
+    visibility: hidden;
+  }
+}
+
+/* Navigation waits for the Home intro (see app/layout.tsx); hidden means unfocusable too. */
+html.intro-pending .site-header {
+  opacity: 0;
+  translate: 0 -2.5rem;
+  visibility: hidden;
+}
+
+/* Everything clickable says so. */
+button:not(:disabled),
+select,
+summary,
+[role="button"] {
+  cursor: pointer;
+}
+
+/* Browser surfaces: the scrollbar follows the current page tone. */
+html {
+  scrollbar-color: color-mix(in oklab, var(--fg) 35%, var(--bg)) var(--bg);
+}
+
+/* Short phones: the hero arch is small, so the placeholder shows its mark without the caption. */
+@media (max-width: 1023px) and (max-height: 740px) {
+  .hero-photo .ph-caption > span:last-child {
+    display: none;
+  }
+}
+
+/* Footer summits (components/layout/Summits.tsx) */
+@keyframes summits-drift {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.summits-drift {
+  animation: summits-drift linear infinite;
+  animation-play-state: paused;
+}
+[data-drifting] .summits-drift {
+  animation-play-state: running;
+}
+/* The summit beacon: holds bright, dips briefly, returns. */
+@keyframes summits-blink {
+  0%,
+  55%,
+  100% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 0.2;
+  }
+}
+.summits-blink {
+  animation: summits-blink 2.8s ease-in-out infinite;
+  animation-play-state: paused;
+}
+[data-drifting] .summits-blink {
+  animation-play-state: running;
+}
+@media (prefers-reduced-motion: reduce) {
+  .summits-drift,
+  .summits-blink {
+    animation: none;
+  }
+}
